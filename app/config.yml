@@ -1,9 +1,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: dev-ingress
-  labels:
-    app: wil
+  name: loadbalancer
+  annotations:
+    kubernetes.io/ingress.className: "traefik"
 spec:
   rules:
   - http:
@@ -12,7 +12,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: svc-wil
+            name: wil
             port:
               number: 8888
 ---
@@ -24,6 +24,7 @@ metadata:
   labels:
     app: wil
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: wil
@@ -37,17 +38,15 @@ spec:
         image: wil42/playground:v1
         ports:
         - containerPort: 8888
-
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: svc-wil
+  name: wil
+  labels:
+    app: wil
 spec:
   selector:
     app: wil
   ports:
-    - protocol: TCP
-      port: 8888
-      targetPort: 8888
+  - port: 8888
