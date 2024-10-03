@@ -1,21 +1,3 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: loadbalancer
-  annotations:
-    kubernetes.io/ingress.className: "traefik"
-spec:
-  rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: wil
-            port:
-              number: 8888
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,12 +23,15 @@ spec:
 ---
 apiVersion: v1
 kind: Service
-metadata:
-  name: wil
-  labels:
-    app: wil
+metadata:  
+  name: my-nodeport-service
 spec:
-  selector:
+  selector:    
     app: wil
-  ports:
-  - port: 8888
+  type: NodePort
+  ports:  
+  - name: http
+    port: 8888
+    targetPort: 8888
+    nodePort: 30036
+    protocol: TCP
