@@ -3,10 +3,7 @@ kind: Deployment
 metadata:
   name: wil
   namespace: dev
-  labels:
-    app: wil
-spec:
-  replicas: 3
+  label
   selector:
     matchLabels:
       app: wil
